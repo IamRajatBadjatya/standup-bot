@@ -1,0 +1,12 @@
+.*
+*.orig
+*.log
+!.gitignore
+!.gitkeep
+!.jshintrc
+!.jscsrc
+!.jshintignore
+bower_components
+node_modules
+reports
+sonar-runner.properties
