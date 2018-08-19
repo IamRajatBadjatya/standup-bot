@@ -51,7 +51,7 @@ var bot = new builder.UniversalBot(connector, [
         );
       }
     }else {
-      session.endConversation();
+      session.endDialog();
     }
   },
   (session, results) => {
