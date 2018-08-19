@@ -40,8 +40,9 @@ var questions = [
 // match any intents handled by other dialogs.
 var bot = new builder.UniversalBot(connector, [
   function(session) {
-    if (session.message.text.includes('@Leo Start')) {
+    if (session.message.text.includes('Start')) {
       if (session.message.user.name === 'rajatbadjatya') {
+        console.log('default flow');
         session.beginDialog('statusDialog');
       } else {
         session.send(
@@ -50,10 +51,6 @@ var bot = new builder.UniversalBot(connector, [
         );
       }
     }else {
-      session.send(
-        session.message.user.name,
-        session.message.text
-      );
       session.endConversation();
     }
   },
