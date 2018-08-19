@@ -27,7 +27,7 @@ server.post('/api/messages', connector.listen());
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var inMemoryStorage = new builder.MemoryBotStorage();
 var statusList = [];
-var projectId = "p_101";
+var projectId = 'p_101';
 var users = [{ name: 'Rajat', id: '101' }, { name: 'Dhruv', id: '102' }];
 var questions = [
   { field: 'yTask', prompt: 'What did you do yesterday?' },
@@ -35,45 +35,51 @@ var questions = [
   { field: 'blocker', prompt: 'Any blocker?' }
 ];
 
-
 // Create your bot with a function to receive messages from the user
 // This default message handler is invoked if the user's utterance doesn't
 // match any intents handled by other dialogs.
-var bot = new builder.UniversalBot(connector, function (session, args) {
-  session.send('You reached the default message handler. You said \'%s\'.', session.message.text);
+var bot = new builder.UniversalBot(connector, function(session, args) {
+  session.send(
+    "You reached the default message handler. You said '%s'.",
+    session.message.text
+  );
 }).set('storage', inMemoryStorage);
 
-bot.dialog('InitialDialog',[
-    (session) => {
-        if(session.message.user.name === 'rajatbadjatya')
-            session.beginDialog('statusDialog');
-        else
-          session.send('You are not an authorized user to start this standup');
+bot
+  .dialog('InitialDialog', [
+    session => {
+      if (session.message.user.name === 'User')
+        session.beginDialog('statusDialog');
+      else session.send('You are not an authorized user to start this standup');
+    },
+    (session, results) => {
+      session.send('Conclusion');
+      console.log(JSON.stringify(results.response));
+      var tasksRef = dB.ref().child('tasks');
+      //var objToSend = [];
+      for (i = 0; i < users.length; i++) {
+        var user = users[i];
+        var obj = {};
+        var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${
+          user.id
+        }`;
+        obj = {
+          yTask: results.response[taskId].yTask,
+          tTask: results.response[taskId].tTask,
+          blocker: results.response[taskId].blocker
+        };
+        tasksRef.child(taskId).set(obj);
+        session.send(
+          `${users[i].name}: <br> ${results.response[taskId].yTask} <br> ${
+            results.response[taskId].tTask
+          } <br> ${results.response[taskId].blocker}`
+        );
+      }
     }
-],(session, results) => {
-  session.send('Conclusion');
-  console.log(JSON.stringify(results.response));
-  var tasksRef = dB.ref().child('tasks');
-  //var objToSend = [];
-  for (i = 0; i < users.length; i++) {
-    var user = users[i];
-    var obj = {};
-    var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${user.id}`
-    obj = {
-      yTask : results.response[taskId].yTask,
-      tTask: results.response[taskId].tTask,
-      blocker: results.response[taskId].blocker
-    };
-    tasksRef.child(taskId).set(obj);
-    session.send(
-      `${users[i].name}: <br> ${results.response[taskId].yTask} <br> ${
-        results.response[taskId].tTask
-      } <br> ${results.response[taskId].blocker}`
-    );
-  }
-}).triggerAction({
-  matches: /^Start$/i
-});
+  ])
+  .triggerAction({
+    matches: /^Start$/i
+  });
 // // This bot ensures user's profile is up to date.
 // var bot = new builder.UniversalBot(connector, [
 //   function(session) {
@@ -123,7 +129,9 @@ bot.dialog('statusDialog', [
     var field = questions[session.dialogData.questionIndex++].field;
     session.dialogData.status[field] = results.response;
     var user = users[session.dialogData.userIndex];
-    var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${user.id}`;
+    var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${
+      user.id
+    }`;
     session.dialogData.statusList[taskId] = session.dialogData.status;
     // Check for end of form
     if (session.dialogData.questionIndex >= questions.length) {
