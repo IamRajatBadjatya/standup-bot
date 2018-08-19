@@ -1,4 +1,4 @@
-var firebase = require('firebase');
+var firebase = require('firebase-admin');
 var restify = require('restify');
 var builder = require('botbuilder');
 var moment = require('moment');
@@ -73,7 +73,7 @@ bot.dialog('statusDialog', [
     session.dialogData.status = args ? args.status : {};
     builder.Prompts.text(
       session,
-      `Hello ${users[session.dialogData.userIndex].name}, ${
+      `Hello ${session.message.user.name}, ${
         questions[session.dialogData.questionIndex].prompt
       }`
     );
