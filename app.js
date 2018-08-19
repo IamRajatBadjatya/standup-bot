@@ -50,9 +50,8 @@ var bot = new builder.UniversalBot(connector, [
         );
       }
     }else {
-      console.log('hello==================');
       session.send(
-        'This is a default dialog',
+        session.message.user.name,
         session.message.text
       );
       session.endConversation();
