@@ -38,48 +38,87 @@ var questions = [
 // Create your bot with a function to receive messages from the user
 // This default message handler is invoked if the user's utterance doesn't
 // match any intents handled by other dialogs.
-var bot = new builder.UniversalBot(connector, function(session, args) {
-  session.send(
-    "You reached the default message handler. You said '%s'.",
-    session.message.text
-  );
-}).set('storage', inMemoryStorage);
-
-bot
-  .dialog('InitialDialog', [
-    session => {
-      if (session.message.user.name === 'rajatbadjatya')
+var bot = new builder.UniversalBot(connector, [
+  function(session) {
+    if (session.message.text.includes('@Leo Start')) {
+      if (session.message.user.name === 'rajatbadjatya') {
         session.beginDialog('statusDialog');
-      else session.send('You are not an authorized user to start this standup');
-    },
-    (session, results) => {
-      session.send('Conclusion');
-      console.log(JSON.stringify(results.response));
-      var tasksRef = dB.ref().child('tasks');
-      //var objToSend = [];
-      for (i = 0; i < users.length; i++) {
-        var user = users[i];
-        var obj = {};
-        var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${
-          user.id
-        }`;
-        obj = {
-          yTask: results.response[taskId].yTask,
-          tTask: results.response[taskId].tTask,
-          blocker: results.response[taskId].blocker
-        };
-        tasksRef.child(taskId).set(obj);
+      } else {
         session.send(
-          `${users[i].name}: <br> ${results.response[taskId].yTask} <br> ${
-            results.response[taskId].tTask
-          } <br> ${results.response[taskId].blocker}`
+          'You are not an authorized user to start this standup',
+          session.message.text
         );
       }
+    }else {
+      console.log('hello==================');
+      session.send(
+        'This is a default dialog',
+        session.message.text
+      );
+      session.endConversation();
     }
-  ])
-  .triggerAction({
-    matches: /^Start$/i
-  });
+  },
+  (session, results) => {
+    session.send('Conclusion');
+    console.log(JSON.stringify(results.response));
+    var tasksRef = dB.ref().child('tasks');
+    //var objToSend = [];
+    for (i = 0; i < users.length; i++) {
+      var user = users[i];
+      var obj = {};
+      var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${
+        user.id
+      }`;
+      obj = {
+        yTask: results.response[taskId].yTask,
+        tTask: results.response[taskId].tTask,
+        blocker: results.response[taskId].blocker
+      };
+      tasksRef.child(taskId).set(obj);
+      session.send(
+        `${users[i].name}: <br> ${results.response[taskId].yTask} <br> ${
+          results.response[taskId].tTask
+        } <br> ${results.response[taskId].blocker}`
+      );
+    }
+  }
+]).set('storage', inMemoryStorage);
+
+// bot
+//   .dialog('InitialDialo', [
+//     session => {
+//       if (session.message.user.name === 'User')
+//         session.beginDialog('statusDialog');
+//       else session.send('You are not an authorized user to start this standup');
+//     },
+//     (session, results) => {
+//       session.send('Conclusion');
+//       console.log(JSON.stringify(results.response));
+//       var tasksRef = dB.ref().child('tasks');
+//       //var objToSend = [];
+//       for (i = 0; i < users.length; i++) {
+//         var user = users[i];
+//         var obj = {};
+//         var taskId = `${projectId}_${moment(new Date()).format('DD-MM-YYYY')}_${
+//           user.id
+//         }`;
+//         obj = {
+//           yTask: results.response[taskId].yTask,
+//           tTask: results.response[taskId].tTask,
+//           blocker: results.response[taskId].blocker
+//         };
+//         tasksRef.child(taskId).set(obj);
+//         session.send(
+//           `${users[i].name}: <br> ${results.response[taskId].yTask} <br> ${
+//             results.response[taskId].tTask
+//           } <br> ${results.response[taskId].blocker}`
+//         );
+//       }
+//     }
+//   ])
+//   .triggerAction({
+//     matches: /^Start$/i
+//   });
 // // This bot ensures user's profile is up to date.
 // var bot = new builder.UniversalBot(connector, [
 //   function(session) {
