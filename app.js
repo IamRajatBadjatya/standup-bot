@@ -19,8 +19,8 @@ firebase.initializeApp({
 var dB = firebase.database();
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
-  appId: null,
-  appPassword: null
+  appId: process.env.MicrosoftAppId,
+  appPassword: process.env.MicrosoftAppPassword
 });
 // Listen for messages from users
 server.post('/api/messages', connector.listen());
@@ -73,7 +73,7 @@ bot.dialog('statusDialog', [
     session.dialogData.status = args ? args.status : {};
     builder.Prompts.text(
       session,
-      `Hello ${users[session.dialogData.userIndex].name}, ${
+      `Hello ${session.message.user.name}, ${
         questions[session.dialogData.questionIndex].prompt
       }`
     );
