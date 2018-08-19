@@ -1,0 +1,15 @@
+{
+    "name": "standupbot",
+    "description": "",
+    "secretKey": "",
+    "services": [
+        {
+            "appId": "",
+            "id": "fe972660-a242-11e8-9b38-4b7b596da6ea",
+            "type": "endpoint",
+            "appPassword": "",
+            "endpoint": "http://localhost:9100/api/messages",
+            "name": "http://localhost:9100/api/messages"
+        }
+    ]
+}

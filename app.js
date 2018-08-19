@@ -1,4 +1,4 @@
-var firebase = require('firebase-admin');
+var firebase = require('firebase');
 var restify = require('restify');
 var builder = require('botbuilder');
 var moment = require('moment');
