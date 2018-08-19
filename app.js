@@ -48,7 +48,7 @@ var bot = new builder.UniversalBot(connector, function(session, args) {
 bot
   .dialog('InitialDialog', [
     session => {
-      if (session.message.user.name === rajatbadjatya)
+      if (session.message.user.name === 'rajatbadjatya')
         session.beginDialog('statusDialog');
       else session.send('You are not an authorized user to start this standup');
     },
