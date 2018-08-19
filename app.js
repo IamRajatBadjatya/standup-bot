@@ -73,7 +73,7 @@ bot.dialog('statusDialog', [
     session.dialogData.status = args ? args.status : {};
     builder.Prompts.text(
       session,
-      `Hello ${session.message.user.name}, ${
+      `Hello ${users[session.dialogData.userIndex].name}, ${
         questions[session.dialogData.questionIndex].prompt
       }`
     );
