@@ -67,10 +67,10 @@ var bot = new builder.UniversalBot(connector, [
       "Hello, it's time to start the daily standup. Please answer the following questions:";
     session.send(message);
     var rule = new schedule.RecurrenceRule();
-    rule.second = 10;
+    rule.minute = 1;
 
     var j = schedule.scheduleJob(rule, function() {
-      console.log('-----------123-------------');
+      console.log('-----------inside job scheduler-------------');
       startProactiveDialog(savedAddress);
     });
   }
@@ -90,6 +90,7 @@ bot.on('conversationUpdate', function(message) {
 
 bot.dialog('statusDialog', [
   (session, args, next) => {
+    console.log('==========>inside status dialog <========');
     session.dialogData.questionIndex = args ? args.questionIndex : 0;
     session.dialogData.statusList = args ? args.statusList : {};
     session.dialogData.status = args ? args.status : {};
