@@ -68,7 +68,7 @@ var bot = new builder.UniversalBot(connector, [
     session.send(message);
     var rule = new schedule.RecurrenceRule();
     rule.minute = 1;
-
+    session.beginDialog('statusDialog');
     var j = schedule.scheduleJob(rule, function() {
       console.log('-----------inside job scheduler-------------');
       startProactiveDialog(savedAddress);
